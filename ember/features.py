@@ -539,10 +539,11 @@ class PEFeatureExtractor(object):
         try:
             lief_binary = lief.PE.parse(list(bytez))
             if lief_binary is None:
-                raise RuntimeError("lief failed to parse bytes!")
+                raise Exception("lief failed to parse bytes!")
         except lief_errors as e:
             print("lief error: ", str(e))
             lief_binary = None
+            raise Exception("lief failed to parse bytes (lief errors)!")
         except Exception:  # everything else (KeyboardInterrupt, SystemExit, ValueError):
             raise
 
