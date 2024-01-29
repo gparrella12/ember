@@ -13,8 +13,9 @@ with open(os.path.join(os.path.dirname(__file__), "README.md"), encoding="UTF-8"
 version = "0.0.2"
 package_data = {}
 setup(
-    name="ember_modified",
+    name="ember-mivia",
     version=version,
+    url = "https://github.com/gparrella12/ember",
     long_description_content_type = "text/markdown",
     description="Endgame Malware BEnchmark for Research",
     long_description=readme,

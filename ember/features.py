@@ -557,3 +557,14 @@ class PEFeatureExtractor(object):
 
     def feature_vector(self, bytez):
         return self.process_raw_features(self.raw_features(bytez))
+    
+    def get_json_features(self, bytez):
+        """Return the JSON of the features extracted from the bytez.
+
+        Args:
+            bytez (bytes): a byte array that represent the PE file from which extract the features.
+
+        Returns:
+            dict: a dictionary that contains the features extracted from the bytez.
+        """
+        return self.raw_features(bytez)
