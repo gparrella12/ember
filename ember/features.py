@@ -568,3 +568,33 @@ class PEFeatureExtractor(object):
             dict: a dictionary that contains the features extracted from the bytez.
         """
         return self.raw_features(bytez)
+    
+    def get_raw_and_processed_features(self, bytes, feature_name):
+        """
+        Return the raw and processed features of the given feature name. 
+        """
+        feature_dict = self.raw_features(bytes)
+        processed_features = self.process_raw_features(feature_dict)
+        feature_range = self.get_feature_range()[feature_name]
+        
+        raw_features = feature_dict[feature_name]
+        return raw_features, processed_features[feature_range[0]:feature_range[1]]
+        
+    def get_feature_range(self):
+        """Return a dict of the features and their range.
+
+        Returns:
+            dict: a dictionary that contains as key the type of the feature and as value a tuple that corresponds to the indexes of the EMBER's feature vector in which these features are contained.
+        """
+        return {
+            'histogram': (0, 256),
+            'byte entropy': (256, 512),
+            'strings': (512, 616),
+            'general': (616, 626),
+            'header': (626, 688),
+            'section': (688, 943),
+            'imports': (943, 2223),
+            'exports': (2223, 2351),
+            'data directories': (2351, 2381)
+        }
+
