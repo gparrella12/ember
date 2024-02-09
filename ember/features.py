@@ -395,8 +395,61 @@ class HeaderFileInfo(FeatureType):
             raw_obj['optional']['sizeof_headers'],
             raw_obj['optional']['sizeof_heap_commit'],
         ]).astype(np.float32)
+        
+        
+    def get_features_index(self, raw_obj):
+        features_list = [
+            raw_obj['coff']['timestamp'],
+            FeatureHasher(10, input_type="string").transform([[raw_obj['coff']['machine']]]).toarray()[0],
+            FeatureHasher(10, input_type="string").transform([raw_obj['coff']['characteristics']]).toarray()[0],
+            FeatureHasher(10, input_type="string").transform([[raw_obj['optional']['subsystem']]]).toarray()[0],
+            FeatureHasher(10, input_type="string").transform([raw_obj['optional']['dll_characteristics']]).toarray()[0],
+            FeatureHasher(10, input_type="string").transform([[raw_obj['optional']['magic']]]).toarray()[0],
+            raw_obj['optional']['major_image_version'],
+            raw_obj['optional']['minor_image_version'],
+            raw_obj['optional']['major_linker_version'],
+            raw_obj['optional']['minor_linker_version'],
+            raw_obj['optional']['major_operating_system_version'],
+            raw_obj['optional']['minor_operating_system_version'],
+            raw_obj['optional']['major_subsystem_version'],
+            raw_obj['optional']['minor_subsystem_version'],
+            raw_obj['optional']['sizeof_code'],
+            raw_obj['optional']['sizeof_headers'],
+            raw_obj['optional']['sizeof_heap_commit'],
+        ]
+        keys_list = [
+            'coff-timestamp',
+            'coff-machine',
+            'coff-characteristics',
+            'optional-subsystem',
+            'optional-dll_characteristics',
+            'optional-magic',
+            'optional-major_image_version',
+            'optional-minor_image_version',
+            'optional-major_linker_version',
+            'optional-minor_linker_version',
+            'optional-major_operating_system_version',
+            'optional-minor_operating_system_version',
+            'optional-major_subsystem_version',
+            'optional-minor_subsystem_version',
+            'optional-sizeof_code',
+            'optional-sizeof_headers',
+            'optional-sizeof_heap_commit',
+        ]
 
-
+        rv = {}
+        index = 0
+        for i in range(len(features_list)):
+            try:
+                if len(features_list[i]) > 1:
+                    rv[keys_list[i]] = (index, index+len(features_list[i]))
+                    index += len(features_list[i])
+            except TypeError:
+                    rv[keys_list[i]] = index
+                    index += 1
+        return rv
+        
+        
 class StringExtractor(FeatureType):
     ''' Extracts strings from raw byte stream '''
 
@@ -597,4 +650,7 @@ class PEFeatureExtractor(object):
             'exports': (2223, 2351),
             'data directories': (2351, 2381)
         }
-
+    
+    def get_header_features_index(self, bytes):
+        raw_obj = self.raw_features(bytes)
+        return HeaderFileInfo().get_features_index(raw_obj['header'])

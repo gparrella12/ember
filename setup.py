@@ -10,7 +10,7 @@ except ImportError:
 with open(os.path.join(os.path.dirname(__file__), "README.md"), encoding="UTF-8") as f:
     readme = f.read()
 
-version = "0.0.2"
+version = "0.0.4"
 package_data = {}
 setup(
     name="ember-mivia",
